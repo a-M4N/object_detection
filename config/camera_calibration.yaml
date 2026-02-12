@@ -1,0 +1,60 @@
+# Camera Calibration Parameters
+
+# Camera Intrinsic Parameters
+camera_matrix:
+  fx: 700.0  # Focal length in x (pixels)
+  fy: 700.0  # Focal length in y (pixels)
+  cx: 640.0  # Principal point x (image center)
+  cy: 360.0  # Principal point y (image center)
+
+# Distortion Coefficients (k1, k2, p1, p2, k3)
+distortion_coefficients:
+  k1: 0.0
+  k2: 0.0
+  p1: 0.0
+  p2: 0.0
+  k3: 0.0
+
+# Camera Physical Properties
+camera_properties:
+  sensor_width_mm: 6.17  # Camera sensor width
+  sensor_height_mm: 4.55  # Camera sensor height
+  focal_length_mm: 3.6  # Physical focal length
+
+# Camera Mounting
+mounting:
+  height_from_ground_cm: 150  # Camera height
+  tilt_angle_deg: 0  # Downward tilt angle
+  pan_angle_deg: 0  # Horizontal rotation
+
+# Perspective Transformation (for bird's-eye view)
+# Define 4 points in image and corresponding real-world coordinates
+perspective_transform:
+  enabled: false
+  source_points:  # [x, y] in image coordinates
+    - [200, 400]
+    - [440, 400]
+    - [100, 300]
+    - [540, 300]
+  destination_points:  # [x, y] in real-world coordinates (meters)
+    - [0, 0]
+    - [10, 0]
+    - [0, 10]
+    - [10, 10]
+
+# Reference Measurements for Calibration
+reference_measurements:
+  # Known distance in real world (meters) and corresponding pixel distance
+  distance_calibration:
+    - real_distance_m: 5.0
+      pixel_distance: 150
+    - real_distance_m: 10.0
+      pixel_distance: 200
+    - real_distance_m: 20.0
+      pixel_distance: 280
+  
+  # Known object sizes for validation
+  known_objects:
+    person_height_m: 1.7
+    car_length_m: 4.5
+    car_width_m: 1.8

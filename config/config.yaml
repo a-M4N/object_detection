@@ -1,0 +1,103 @@
+# Detection Configuration
+detection:
+  model: "yolov8m.pt"  # Options: yolov8n, yolov8s, yolov8m, yolov8l, yolov8x
+  confidence_threshold: 0.5
+  iou_threshold: 0.45
+  device: "cpu"  # cuda or cpu
+  imgsz: 640  # Input image size
+
+# Tracking Configuration
+tracking:
+  enabled: true
+  tracker_type: "bytetrack"  # bytetrack or botsort
+  track_thresh: 0.5
+  track_buffer: 30
+  match_thresh: 0.8
+  min_box_area: 10
+
+# Speed Estimation
+speed_estimation:
+  enabled: true
+  vehicle_classes: ["car", "truck", "bus", "motorcycle", "bicycle"]
+  reference_distance_meters: 10.0  # Real-world reference distance
+  reference_distance_pixels: 200  # Corresponding pixel distance
+  fps: 30  # Video FPS (auto-detected if not set)
+  smoothing_window: 5  # Frames to average for smooth speed
+
+# Height Estimation
+height_estimation:
+  enabled: true
+  person_class: "person"
+  average_person_height_cm: 170  # Reference height
+  camera_height_cm: 150  # Camera mounting height
+  camera_angle_deg: 0  # Camera tilt angle
+
+# Distance Estimation
+distance_estimation:
+  enabled: true
+  focal_length_pixels: 700  # Camera focal length in pixels
+  known_object_heights:  # Real-world heights in meters
+    person: 1.7
+    car: 1.5
+    truck: 3.0
+    bus: 3.5
+    bicycle: 1.0
+    motorcycle: 1.2
+
+# Direction Detection
+direction_detection:
+  enabled: true
+  min_displacement: 10  # Minimum pixel movement to detect direction
+  history_frames: 10  # Frames to analyze for direction
+
+# Visualization
+visualization:
+  show_bbox: true
+  show_label: true
+  show_confidence: true
+  show_track_id: true
+  show_speed: true
+  show_height: true
+  show_distance: true
+  show_direction: true
+  show_fps: true
+  bbox_thickness: 2
+  font_scale: 0.6
+  font_thickness: 2
+  colors:  # BGR format
+    person: [0, 255, 0]
+    car: [255, 0, 0]
+    truck: [0, 0, 255]
+    bus: [255, 255, 0]
+    default: [255, 255, 255]
+
+# Output Configuration
+output:
+  save_video: true
+  save_data: true
+  output_dir: "output"
+  video_codec: "mp4v"  # mp4v, avc1, or h264
+  video_fps: 30
+  data_format: "both"  # csv, json, or both
+
+# Alert System
+alerts:
+  enabled: false
+  speed_limit_kmh: 80
+  alert_classes: ["car", "truck", "bus"]
+  intrusion_zones: []  # List of polygon coordinates
+  log_alerts: true
+
+# Performance
+performance:
+  skip_frames: 0  # Process every Nth frame (0 = process all)
+  resize_input: false
+  resize_width: 640
+  resize_height: 480
+  use_half_precision: false  # FP16 for faster inference on GPU
+
+# Logging
+logging:
+  level: "INFO"  # DEBUG, INFO, WARNING, ERROR
+  log_to_file: true
+  log_file: "output/logs/app.log"
