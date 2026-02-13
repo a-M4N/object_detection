@@ -3,7 +3,6 @@ YOLO Object Detector Wrapper
 Handles object detection using YOLOv8 models from Ultralytics.
 """
 
-import cv2
 import numpy as np
 from ultralytics import YOLO
 from typing import List, Dict, Tuple, Optional
@@ -114,97 +113,3 @@ class ObjectDetector:
             self.logger.error(f"Detection failed: {e}")
             return []
     
-    def detect_batch(
-        self,
-        frames: List[np.ndarray],
-        classes: Optional[List[int]] = None
-    ) -> List[List[Dict]]:
-        """
-        Perform batch detection on multiple frames.
-        
-        Args:
-            frames: List of input images
-            classes: Optional list of class IDs to detect
-        
-        Returns:
-            List of detection lists for each frame
-        """
-        try:
-            results = self.model.predict(
-                frames,
-                conf=self.conf_threshold,
-                iou=self.iou_threshold,
-                classes=classes,
-                device=self.device,
-                imgsz=self.imgsz,
-                verbose=False
-            )
-            
-            all_detections = []
-            for result in results:
-                detections = []
-                if result.boxes is not None:
-                    boxes = result.boxes
-                    
-                    for i in range(len(boxes)):
-                        box = boxes.xyxy[i].cpu().numpy()
-                        conf = float(boxes.conf[i].cpu().numpy())
-                        cls_id = int(boxes.cls[i].cpu().numpy())
-                        
-                        detection = {
-                            'bbox': box.tolist(),
-                            'confidence': conf,
-                            'class_id': cls_id,
-                            'class_name': self.class_names[cls_id]
-                        }
-                        detections.append(detection)
-                
-                all_detections.append(detections)
-            
-            return all_detections
-        
-        except Exception as e:
-            self.logger.error(f"Batch detection failed: {e}")
-            return [[] for _ in frames]
-    
-    def get_class_id(self, class_name: str) -> Optional[int]:
-        """
-        Get class ID from class name.
-        
-        Args:
-            class_name: Name of the class
-        
-        Returns:
-            Class ID or None if not found
-        """
-        for cls_id, name in self.class_names.items():
-            if name.lower() == class_name.lower():
-                return cls_id
-        return None
-    
-    def get_class_ids(self, class_names: List[str]) -> List[int]:
-        """
-        Get class IDs from list of class names.
-        
-        Args:
-            class_names: List of class names
-        
-        Returns:
-            List of class IDs
-        """
-        class_ids = []
-        for name in class_names:
-            cls_id = self.get_class_id(name)
-            if cls_id is not None:
-                class_ids.append(cls_id)
-        return class_ids
-    
-    def update_confidence_threshold(self, threshold: float):
-        """Update confidence threshold."""
-        self.conf_threshold = max(0.0, min(1.0, threshold))
-        self.logger.info(f"Confidence threshold updated to {self.conf_threshold}")
-    
-    def update_iou_threshold(self, threshold: float):
-        """Update IOU threshold."""
-        self.iou_threshold = max(0.0, min(1.0, threshold))
-        self.logger.info(f"IOU threshold updated to {self.iou_threshold}")

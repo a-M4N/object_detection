@@ -237,6 +237,7 @@ class DataLogger:
         stats = {
             'total_detections': len(self.data_records),
             'unique_tracks': len(track_ids),
+            'unique_classes': len(class_counts),
             'class_counts': class_counts,
             'speed_stats': {
                 'avg': round(sum(speeds) / len(speeds), 2) if speeds else 0,

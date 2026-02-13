@@ -59,7 +59,7 @@ Distance (m) = (Known Object Height × Focal Length) / Bbox Height in Pixels
 - Trajectory prediction
 
 ### Real-Time Visualization
-- Bounding boxes with color-coded labels
+- Objects: total count and unique classes
 - Unique tracking IDs
 - Speed display (for vehicles)
 - Height display (for persons)

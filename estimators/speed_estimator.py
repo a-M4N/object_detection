@@ -142,73 +142,8 @@ class SpeedEstimator:
         
         return tracked_objects
     
-    def update_calibration(
-        self,
-        reference_distance_meters: float,
-        reference_distance_pixels: float
-    ):
-        """
-        Update calibration parameters.
-        
-        Args:
-            reference_distance_meters: Known real-world distance
-            reference_distance_pixels: Corresponding pixel distance
-        """
-        self.reference_distance_meters = reference_distance_meters
-        self.reference_distance_pixels = reference_distance_pixels
-        self.scale_factor = reference_distance_meters / reference_distance_pixels
-        self.logger.info(f"Calibration updated: scale={self.scale_factor:.4f} m/px")
-    
     def update_fps(self, fps: float):
         """Update video FPS."""
         self.fps = fps
         self.logger.info(f"FPS updated to {fps}")
     
-    def reset(self):
-        """Reset speed history and previous positions."""
-        self.speed_history.clear()
-        self.previous_positions.clear()
-        self.logger.info("Speed estimator reset")
-    
-    def cleanup_old_tracks(self, active_track_ids: List[int]):
-        """
-        Remove data for tracks that are no longer active.
-        
-        Args:
-            active_track_ids: List of currently active track IDs
-        """
-        # Clean up speed history
-        inactive_tracks = set(self.speed_history.keys()) - set(active_track_ids)
-        for track_id in inactive_tracks:
-            if track_id in self.speed_history:
-                del self.speed_history[track_id]
-            if track_id in self.previous_positions:
-                del self.previous_positions[track_id]
-    
-    def get_average_speed(self, track_id: int) -> Optional[float]:
-        """
-        Get average speed for a track.
-        
-        Args:
-            track_id: Track ID to query
-        
-        Returns:
-            Average speed in km/h or None
-        """
-        if track_id in self.speed_history and len(self.speed_history[track_id]) > 0:
-            return round(np.mean(list(self.speed_history[track_id])), 1)
-        return None
-    
-    def get_max_speed(self, track_id: int) -> Optional[float]:
-        """
-        Get maximum speed for a track.
-        
-        Args:
-            track_id: Track ID to query
-        
-        Returns:
-            Maximum speed in km/h or None
-        """
-        if track_id in self.speed_history and len(self.speed_history[track_id]) > 0:
-            return round(max(self.speed_history[track_id]), 1)
-        return None

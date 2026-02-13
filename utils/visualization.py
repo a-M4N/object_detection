@@ -101,7 +101,7 @@ class Visualizer:
             self._draw_fps(annotated_frame, fps)
         
         # Draw info panel
-        self._draw_info_panel(annotated_frame, len(detections))
+        self._draw_info_panel(annotated_frame, detections)
         
         return annotated_frame
     
@@ -171,9 +171,6 @@ class Visualizer:
             info_text = ' | '.join(info_parts)
             self._draw_info_text(frame, bbox, info_text, color)
         
-        # Draw trajectory if available
-        if 'track_id' in detection and hasattr(self, 'track_history'):
-            self._draw_trajectory(frame, detection['track_id'], color)
         
         return frame
     
@@ -288,9 +285,12 @@ class Visualizer:
             self.font_thickness
         )
     
-    def _draw_info_panel(self, frame: np.ndarray, num_detections: int):
+    def _draw_info_panel(self, frame: np.ndarray, detections: List[Dict]):
         """Draw information panel."""
-        info_text = f"Objects: {num_detections}"
+        num_detections = len(detections)
+        unique_classes = len(set(det['class_name'] for det in detections))
+        
+        info_text = f"Objects: {num_detections} | Classes: {unique_classes}"
         
         # Position at top-left
         x, y = 10, 30
@@ -322,36 +322,4 @@ class Visualizer:
             self.font_thickness
         )
     
-    def _draw_trajectory(
-        self,
-        frame: np.ndarray,
-        track_id: int,
-        color: Tuple[int, int, int],
-        max_points: int = 30
-    ):
-        """Draw object trajectory."""
-        # This would require access to track history
-        # Placeholder for trajectory drawing
-        pass
     
-    def draw_zone(
-        self,
-        frame: np.ndarray,
-        zone_points: List[Tuple[int, int]],
-        color: Tuple[int, int, int] = (0, 255, 255),
-        thickness: int = 2
-    ):
-        """
-        Draw a zone polygon on frame.
-        
-        Args:
-            frame: Input frame
-            zone_points: List of (x, y) points defining the zone
-            color: Zone color
-            thickness: Line thickness
-        """
-        if len(zone_points) < 3:
-            return
-        
-        points = np.array(zone_points, dtype=np.int32)
-        cv2.polylines(frame, [points], True, color, thickness)
