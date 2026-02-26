@@ -1,0 +1,89 @@
+# Detection Configuration
+detection:
+  model: "models/yolov8s_playing_cards.pt"  # Playing cards model
+  confidence_threshold: 0.2  # Lowered from 0.5 to catch harder-to-see cards
+  iou_threshold: 0.7  # Increased from 0.6 to allow dense overlapping cards in hands
+  device: "cpu"  # cuda or cpu
+  imgsz: 640  # Input image size
+
+# Tracking Configuration
+tracking:
+  enabled: true
+  tracker_type: "bytetrack"
+  track_thresh: 0.2
+  track_buffer: 30
+  match_thresh: 0.8
+  min_box_area: 10
+
+# Speed Estimation
+speed_estimation:
+  enabled: false
+  vehicle_classes: []
+  reference_distance_meters: 10.0
+  reference_distance_pixels: 200
+  fps: 30
+  smoothing_window: 5
+
+# Height Estimation
+height_estimation:
+  enabled: false
+  person_class: "person"
+  average_person_height_cm: 170
+  camera_height_cm: 150
+  camera_angle_deg: 0
+
+# Distance Estimation
+distance_estimation:
+  enabled: false
+  focal_length_pixels: 700
+  known_object_heights: {}
+
+# Direction Detection
+direction_detection:
+  enabled: false
+  min_displacement: 10
+  history_frames: 10
+
+# Visualization
+visualization:
+  show_bbox: true
+  show_label: true
+  show_confidence: true
+  show_track_id: true
+  show_speed: false
+  show_height: false
+  show_distance: false
+  show_direction: false
+  show_fps: true
+  bbox_thickness: 2
+  font_scale: 0.6
+  font_thickness: 2
+  colors:
+    default: [0, 255, 0] # Green default
+
+# Output Configuration
+output:
+  save_video: true
+  save_data: true
+  output_dir: "output"
+  video_codec: "mp4v"
+  video_fps: 30
+  data_format: "both"
+
+# Alert System
+alerts:
+  enabled: false
+
+# Performance
+performance:
+  skip_frames: 0
+  resize_input: false
+  resize_width: 640
+  resize_height: 480
+  use_half_precision: false
+
+# Logging
+logging:
+  level: "INFO"
+  log_to_file: true
+  log_file: "output/logs/app.log"
