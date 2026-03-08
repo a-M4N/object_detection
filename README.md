@@ -1,12 +1,19 @@
 # Real-Time Object Detection & Tracking System
 
-A comprehensive Python-based object detection application using YOLOv8 with advanced tracking, speed estimation, height estimation, and distance calculation capabilities.
+A comprehensive Python-based object detection application using YOLOv8 with advanced tracking, speed estimation, height estimation, and distance calculation capabilities. It features a modern Graphical User Interface (GUI) and specialized detection profiles including general objects and playing cards.
 
 ## Features
 
-### Core Detection
-- **YOLOv8** (latest YOLO version) for high-accuracy real-time object detection
-- Support for 80+ COCO object classes (person, car, bike, truck, bus, animals, etc.)
+### User Interface
+- **Modern GUI** built with CustomTkinter for easy interaction
+- Seamless selection of input modes (Video, Image, Webcam)
+- Intuitive profile selection ("General Objects" or "Playing Cards")
+- Integrated system log and status updates
+
+### Core Detection Profiles
+- **General Objects**: Detects 80+ COCO classes (vehicles, persons, animals, etc.)
+- **Playing Cards**: Custom-trained model to detect and identify standard playing cards
+- **YOLOv8** core architecture for high-accuracy real-time object detection
 - Multiple input sources:
   - Image files (JPG, PNG, etc.)
   - Video files (MP4, AVI, etc.)
@@ -81,11 +88,13 @@ object_detection/
 ├── config/
 │   ├── __init__.py
 │   ├── config.yaml           # Main configuration file
+│   ├── cards.yaml            # Playing cards profile configuration
 │   └── camera_calibration.yaml
 ├── models/
 │   ├── __init__.py
 │   ├── detector.py           # YOLO detection wrapper
-│   └── tracker.py            # ByteTrack integration
+│   ├── tracker.py            # ByteTrack integration
+│   └── yolov8s_playing_cards.pt # Custom playing cards model
 ├── estimators/
 │   ├── __init__.py
 │   ├── speed_estimator.py    # Vehicle speed estimation
@@ -98,7 +107,8 @@ object_detection/
 │   ├── visualization.py      # Drawing and display
 │   ├── calibration.py        # Camera calibration
 │   └── logger.py             # Data logging
-├── main.py                   # Main application entry point
+├── gui.py                    # Modern GUI application
+├── main.py                   # Main application logic & CLI
 ├── requirements.txt          # Python dependencies
 └── README.md                 # This file
 ```
@@ -124,6 +134,7 @@ venv\Scripts\activate  # On Windows
 ### Step 3: Install Dependencies
 ```bash
 pip install -r requirements.txt
+pip install customtkinter  # For the GUI interface
 ```
 
 ### Step 4: Download YOLO Model
@@ -151,27 +162,41 @@ For accurate measurements, calibrate your camera:
 
 ## Usage
 
-### 1. Process Image File
+### Graphical User Interface (Recommended)
+You can launch the complete application using the modern GUI:
+```bash
+python gui.py
+```
+From the GUI, you can easily:
+1. Select the input mode (Video File, Image File, Webcam).
+2. Browse your file system for input sources.
+3. Choose a Detection Profile ("General Objects" or "Playing Cards").
+4. Configure output options (Save Output, Export Data, Show Live Display).
+5. Monitor logs and execution status in real-time.
+
+### Command-Line Interface (Advanced)
+
+#### 1. Process Image File
 ```bash
 python main.py --source path/to/image.jpg --mode image
 ```
 
-### 2. Process Video File
+#### 2. Process Video File
 ```bash
 python main.py --source path/to/video.mp4 --mode video --save-output
 ```
 
-### 3. Webcam (Live Camera)
+#### 3. Webcam (Live Camera)
 ```bash
 python main.py --source 0 --mode webcam
 ```
 
-### 4. IP Camera Stream
+#### 4. IP Camera Stream
 ```bash
 python main.py --source rtsp://username:password@ip:port/stream --mode stream
 ```
 
-### 5. Advanced Options
+#### 5. Advanced Options
 ```bash
 python main.py \
   --source video.mp4 \

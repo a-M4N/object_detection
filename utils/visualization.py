@@ -127,6 +127,11 @@ class Visualizer:
         # Get color for this class
         color = self.colors.get(class_name, self.colors['default'])
         
+        # Override color if alert
+        is_alert = detection.get('alert', False)
+        if is_alert:
+            color = (0, 0, 255)  # Bright Red for alerts in BGR
+        
         # Draw bounding box
         if self.show_bbox:
             x1, y1, x2, y2 = map(int, bbox)
@@ -160,6 +165,15 @@ class Visualizer:
             direction = detection['direction']
             if direction != 'Stationary' and direction != 'Unknown':
                 info_parts.append(direction)
+                
+        # Add PPE check messages
+        if 'present_ppe' in detection and detection['present_ppe']:
+            info_parts.append("PPE Present: " + ", ".join(detection['present_ppe']))
+        
+        # Add alert messages if present
+        if is_alert and 'alerts_list' in detection:
+            for alert in detection['alerts_list']:
+                info_parts.append(f"!! {alert['message']} !!")
         
         # Draw label
         if label_parts:

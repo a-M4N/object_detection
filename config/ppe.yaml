@@ -1,15 +1,15 @@
 # Detection Configuration
 detection:
-  model: "yolov8m.pt"  # Options: yolov8n, yolov8s, yolov8m, yolov8l, yolov8x
-  confidence_threshold: 0.5
+  model: "yolov8n-ppe.pt"  # Pre-trained PPE model
+  confidence_threshold: 0.1  # Lowered to detect all types of PPEs more aggressively
   iou_threshold: 0.45
   device: "cpu"  # cuda or cpu
   imgsz: 640  # Input image size
 
 # Tracking Configuration
 tracking:
-  enabled: true
-  tracker_type: "bytetrack"  # bytetrack or botsort
+  enabled: false
+  tracker_type: "bytetrack"
   track_thresh: 0.5
   track_buffer: 30
   match_thresh: 0.8
@@ -17,52 +17,23 @@ tracking:
 
 # Speed Estimation
 speed_estimation:
-  enabled: true
-  vehicle_classes: ["car", "truck", "bus", "motorcycle", "bicycle"]
-  reference_distance_meters: 10.0  # Real-world reference distance
-  reference_distance_pixels: 200  # Corresponding pixel distance
-  fps: 30  # Video FPS (auto-detected if not set)
-  smoothing_window: 5  # Frames to average for smooth speed
+  enabled: false
 
 # Height Estimation
 height_estimation:
-  enabled: true
-  person_class: "person"
-  average_person_height_cm: 170  # Reference height
-  camera_height_cm: 150  # Camera mounting height
-  camera_angle_deg: 0  # Camera tilt angle
+  enabled: false
 
 # Distance Estimation
 distance_estimation:
-  enabled: true
-  focal_length_pixels: 700  # Camera focal length in pixels
-  known_object_heights:  # Real-world heights in meters
-    person: 1.7
-    car: 1.5
-    truck: 3.0
-    bus: 3.5
-    bicycle: 1.0
-    motorcycle: 1.2
+  enabled: false
 
 # Direction Detection
 direction_detection:
-  enabled: true
-  min_displacement: 10  # Minimum pixel movement to detect direction
-  history_frames: 10  # Frames to analyze for direction
+  enabled: false
 
-# PPE Detection
+# PPE Detection (secondary inference)
 ppe_detection:
   enabled: false
-  model: "yolov8n.pt"  # Model for PPE detection (replace with custom weights)
-  confidence_threshold: 0.5
-  iou_threshold: 0.45
-  required_items:
-    - "Safety Helmet"
-    - "Safety Vest"
-    - "Safety Gloves"
-    - "Safety Goggles"
-    - "Safety Mask"
-    - "Safety Boots"
 
 # Visualization
 visualization:
@@ -79,10 +50,14 @@ visualization:
   font_scale: 0.6
   font_thickness: 2
   colors:  # BGR format
-    person: [0, 255, 0]
-    car: [255, 0, 0]
-    truck: [0, 0, 255]
-    bus: [255, 255, 0]
+    helmet: [0, 255, 255]      # Yellow
+    Safety Helmet: [0, 255, 255]
+    Vest: [0, 165, 255]        # Orange
+    Safety Vest: [0, 165, 255]
+    Gloves: [255, 0, 0]        # Blue
+    goggles: [255, 0, 255]     # Magenta
+    mask: [0, 255, 0]          # Green
+    safety_shoe: [128, 128, 0] # Teal
     default: [255, 255, 255]
 
 # Output Configuration

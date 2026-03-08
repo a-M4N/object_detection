@@ -18,9 +18,11 @@ from estimators.speed_estimator import SpeedEstimator
 from estimators.height_estimator import HeightEstimator
 from estimators.distance_estimator import DistanceEstimator
 from estimators.direction_detector import DirectionDetector
+from estimators.ppe_detector import PPEDetector
 from utils.video_handler import VideoHandler
 from utils.visualization import Visualizer
 from utils.logger import DataLogger
+from utils.alert_system import AlertSystem
 
 
 class ObjectDetectionApp:
@@ -149,6 +151,23 @@ class ObjectDetectionApp:
             )
         else:
             self.direction_detector = None
+            
+        # PPE Detector
+        if self.config.get('ppe_detection', {}).get('enabled', False):
+            ppe_config = self.config['ppe_detection']
+            self.ppe_detector = PPEDetector(
+                model_path=ppe_config.get('model', 'yolov8n.pt'),
+                conf_threshold=ppe_config.get('confidence_threshold', 0.5),
+                iou_threshold=ppe_config.get('iou_threshold', 0.45),
+                device=self.config['detection']['device'],
+                required_items=ppe_config.get('required_items', [])
+            )
+        else:
+            self.ppe_detector = None
+        
+        # Alert System
+        alerts_config = self.config.get('alerts', {})
+        self.alert_system = AlertSystem(alerts_config)
         
         # Visualizer
         vis_config = self.config['visualization']
@@ -206,6 +225,14 @@ class ObjectDetectionApp:
         # Detect direction
         if self.direction_detector is not None:
             detections = self.direction_detector.detect_direction(detections)
+            
+        # Detect PPE
+        if getattr(self, 'ppe_detector', None) is not None:
+            detections = self.ppe_detector.check_ppe(frame, detections)
+        
+        # Check alerts
+        if self.alert_system is not None:
+            detections = self.alert_system.check_alerts(detections)
         
         return detections
     

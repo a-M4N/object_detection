@@ -92,7 +92,7 @@ class DetectionGUI(ctk.CTk):
         self.profile_label = ctk.CTkLabel(self.main_frame, text="Detection Profile", font=ctk.CTkFont(size=14, weight="bold"))
         self.profile_label.pack(pady=(20, 5), anchor="w", padx=10)
         
-        self.profile_view = ctk.CTkSegmentedButton(self.main_frame, values=["General Objects", "Playing Cards"])
+        self.profile_view = ctk.CTkSegmentedButton(self.main_frame, values=["General Objects", "Playing Cards", "PPE Detection"])
         self.profile_view.set("General Objects")
         self.profile_view.pack(pady=5, padx=10, fill="x")
         
@@ -211,7 +211,13 @@ class DetectionGUI(ctk.CTk):
         try:
             print(f"--- Starting Detection [Mode: {mode}, Profile: {profile}] ---")
             
-            config_path = "config/config.yaml" if profile == "General Objects" else "config/cards.yaml"
+            if profile == "Playing Cards":
+                config_path = "config/cards.yaml"
+            elif profile == "PPE Detection":
+                config_path = "config/ppe.yaml"
+            else:
+                config_path = "config/config.yaml"
+                
             # Create App Instance
             app = ObjectDetectionApp(config_path=config_path)
             
