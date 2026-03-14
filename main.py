@@ -88,12 +88,14 @@ class ObjectDetectionApp:
         """Initialize all system components."""
         # Detector
         det_config = self.config['detection']
+        perf_config = self.config.get('performance', {})
         self.detector = ObjectDetector(
             model_path=det_config['model'],
             conf_threshold=det_config['confidence_threshold'],
             iou_threshold=det_config['iou_threshold'],
             device=det_config['device'],
-            imgsz=det_config['imgsz']
+            imgsz=det_config['imgsz'],
+            half=perf_config.get('use_half_precision', False)
         )
         
         # Tracker
@@ -159,12 +161,14 @@ class ObjectDetectionApp:
         # PPE Detector
         if self.config.get('ppe_detection', {}).get('enabled', False):
             ppe_config = self.config['ppe_detection']
+            perf_config = self.config.get('performance', {})
             self.ppe_detector = PPEDetector(
                 model_path=ppe_config.get('model', 'yolov8n.pt'),
                 conf_threshold=ppe_config.get('confidence_threshold', 0.5),
                 iou_threshold=ppe_config.get('iou_threshold', 0.45),
                 device=self.config['detection']['device'],
-                required_items=ppe_config.get('required_items', [])
+                required_items=ppe_config.get('required_items', []),
+                half=perf_config.get('use_half_precision', False)
             )
         else:
             self.ppe_detector = None

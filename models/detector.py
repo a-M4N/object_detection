@@ -27,7 +27,8 @@ class ObjectDetector:
         conf_threshold: float = 0.5,
         iou_threshold: float = 0.45,
         device: str = "cuda",
-        imgsz: int = 640
+        imgsz: int = 640,
+        half: bool = False
     ):
         """
         Initialize the YOLO detector.
@@ -44,6 +45,7 @@ class ObjectDetector:
         self.iou_threshold = iou_threshold
         self.device = device
         self.imgsz = imgsz
+        self.half = half
         
         # Load YOLO model
         self.logger.info(f"Loading YOLO model: {model_path}")
@@ -86,6 +88,7 @@ class ObjectDetector:
                 classes=classes, 
                 device=self.device,
                 imgsz=self.imgsz,
+                half=self.half,
                 augment=True,
                 verbose=False
             )

@@ -3,7 +3,7 @@ detection:
   model: "yolov8n-ppe.pt"  # Pre-trained PPE model
   confidence_threshold: 0.1  # Lowered to detect all types of PPEs more aggressively
   iou_threshold: 0.7  # Increased to prevent overlapping PPEs from being suppressed
-  device: "cpu"  # cuda or cpu
+  device: "cuda"  # cuda or cpu
   imgsz: 1280  # Increased to 1280 for better detection of small PPE like goggles
 
 # Tracking Configuration
@@ -83,7 +83,7 @@ performance:
   resize_input: false
   resize_width: 640
   resize_height: 480
-  use_half_precision: false  # FP16 for faster inference on GPU
+  use_half_precision: true  # FP16 for faster inference on GPU
 
 # Logging
 logging:

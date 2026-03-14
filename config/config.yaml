@@ -3,7 +3,7 @@ detection:
   model: "yolov8m.pt"  # Options: yolov8n, yolov8s, yolov8m, yolov8l, yolov8x
   confidence_threshold: 0.5
   iou_threshold: 0.45
-  device: "cpu"  # cuda or cpu
+  device: "cuda"  # cuda or cpu
   imgsz: 640  # Input image size
 
 # Tracking Configuration
@@ -108,7 +108,7 @@ performance:
   resize_input: false
   resize_width: 640
   resize_height: 480
-  use_half_precision: false  # FP16 for faster inference on GPU
+  use_half_precision: true  # FP16 for faster inference on GPU
 
 # Logging
 logging:

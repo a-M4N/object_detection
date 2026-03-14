@@ -19,7 +19,8 @@ class PPEDetector:
         conf_threshold: float,
         iou_threshold: float,
         device: str,
-        required_items: List[str]
+        required_items: List[str],
+        half: bool = False
     ):
         """Initialize the PPE Detector."""
         self.logger = logging.getLogger(__name__)
@@ -32,7 +33,8 @@ class PPEDetector:
                 conf_threshold=conf_threshold,
                 iou_threshold=iou_threshold,
                 device=device,
-                imgsz=640  # using higher resolution as it runs on the full frame
+                imgsz=640,  # using higher resolution as it runs on the full frame
+                half=half
             )
             self.enabled = True
             self.logger.info(f"PPEDetector initialized with required items: {self.required_items}")

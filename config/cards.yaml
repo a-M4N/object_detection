@@ -3,7 +3,7 @@ detection:
   model: "models/yolov8s_playing_cards.pt"  # Playing cards model
   confidence_threshold: 0.2  # Lowered from 0.5 to catch harder-to-see cards
   iou_threshold: 0.7  # Increased from 0.6 to allow dense overlapping cards in hands
-  device: "cpu"  # cuda or cpu
+  device: "cuda"  # cuda or cpu
   imgsz: 640  # Input image size
 
 # Tracking Configuration
@@ -80,7 +80,7 @@ performance:
   resize_input: false
   resize_width: 640
   resize_height: 480
-  use_half_precision: false
+  use_half_precision: true
 
 # Logging
 logging:
