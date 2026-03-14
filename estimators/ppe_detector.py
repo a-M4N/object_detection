@@ -32,7 +32,7 @@ class PPEDetector:
                 conf_threshold=conf_threshold,
                 iou_threshold=iou_threshold,
                 device=device,
-                imgsz=320  # smaller size for crops to speed up inference
+                imgsz=640  # using higher resolution as it runs on the full frame
             )
             self.enabled = True
             self.logger.info(f"PPEDetector initialized with required items: {self.required_items}")

@@ -112,9 +112,17 @@ class ObjectTracker:
             
             # Convert back to our format with track IDs
             tracked_detections = []
+            
+            # Create a lookup for original class names based on class_id
+            # We assume detections list maps class_id to class_name correctly
+            class_name_map = {}
+            for det in detections:
+                class_name_map[det['class_id']] = det['class_name']
+                
             for i in range(len(tracked_objects)):
                 track_id = int(tracked_objects.tracker_id[i])
                 bbox = tracked_objects.xyxy[i].tolist()
+                cls_id = int(tracked_objects.class_id[i])
                 
                 # Calculate center point
                 center_x = (bbox[0] + bbox[2]) / 2
@@ -123,8 +131,8 @@ class ObjectTracker:
                 tracked_det = {
                     'bbox': bbox,
                     'confidence': float(tracked_objects.confidence[i]),
-                    'class_id': int(tracked_objects.class_id[i]),
-                    'class_name': detections[i]['class_name'] if i < len(detections) else 'unknown',
+                    'class_id': cls_id,
+                    'class_name': class_name_map.get(cls_id, f"class_{cls_id}"),
                     'track_id': track_id,
                     'center': (center_x, center_y)
                 }

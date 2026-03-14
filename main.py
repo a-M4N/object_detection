@@ -99,8 +99,12 @@ class ObjectDetectionApp:
         # Tracker
         if self.config['tracking']['enabled']:
             track_config = self.config['tracking']
+            
+            # Ensure tracker does not drop detections the detector allowed (crucial for small PPEs with low conf)
+            effective_track_thresh = min(track_config['track_thresh'], det_config['confidence_threshold'])
+            
             self.tracker = ObjectTracker(
-                track_thresh=track_config['track_thresh'],
+                track_thresh=effective_track_thresh,
                 track_buffer=track_config['track_buffer'],
                 match_thresh=track_config['match_thresh'],
                 min_box_area=track_config['min_box_area']

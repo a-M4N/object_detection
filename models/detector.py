@@ -82,9 +82,11 @@ class ObjectDetector:
                 frame,
                 conf=self.conf_threshold,
                 iou=self.iou_threshold,
-                classes=classes,
+                # letting classes=None handle all classes natively
+                classes=classes, 
                 device=self.device,
                 imgsz=self.imgsz,
+                augment=True,
                 verbose=False
             )
             
