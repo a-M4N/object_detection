@@ -92,6 +92,9 @@ class Visualizer:
         """
         annotated_frame = frame.copy()
         
+        # Reset tracking of drawn label areas for the new frame to avoid overlaps
+        self.drawn_labels = []
+        
         # Draw each detection
         for det in detections:
             annotated_frame = self._draw_single_detection(annotated_frame, det)
@@ -166,10 +169,6 @@ class Visualizer:
             if direction != 'Stationary' and direction != 'Unknown':
                 info_parts.append(direction)
                 
-        # Add PPE check messages
-        if 'present_ppe' in detection and detection['present_ppe']:
-            info_parts.append("PPE Present: " + ", ".join(detection['present_ppe']))
-        
         # Add alert messages if present
         if is_alert and 'alerts_list' in detection:
             for alert in detection['alerts_list']:
@@ -206,11 +205,28 @@ class Visualizer:
             self.font_thickness
         )
         
+        # Adjust y1 to avoid overlapping with previously drawn labels
+        label_height = text_height + baseline + 5
+        adjusted_y1 = y1
+        if hasattr(self, 'drawn_labels'):
+            for _ in range(10):  # limit attempts to stack
+                overlap = False
+                for (dx1, dy1, dx2, dy2) in self.drawn_labels:
+                    if not (x1 + text_width + 5 < dx1 or x1 > dx2 or adjusted_y1 - label_height > dy2 or adjusted_y1 < dy1):
+                        overlap = True
+                        break
+                if overlap:
+                    adjusted_y1 -= (label_height + 2)
+                else:
+                    break
+                    
+            self.drawn_labels.append((x1, adjusted_y1 - label_height, x1 + text_width + 5, adjusted_y1))
+            
         # Draw background rectangle
         cv2.rectangle(
             frame,
-            (x1, y1 - text_height - baseline - 5),
-            (x1 + text_width + 5, y1),
+            (x1, adjusted_y1 - text_height - baseline - 5),
+            (x1 + text_width + 5, adjusted_y1),
             color,
             -1
         )
@@ -219,7 +235,7 @@ class Visualizer:
         cv2.putText(
             frame,
             label,
-            (x1 + 2, y1 - baseline - 2),
+            (x1 + 2, adjusted_y1 - baseline - 2),
             self.font,
             self.font_scale,
             (0, 0, 0),  # Black text

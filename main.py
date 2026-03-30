@@ -18,7 +18,6 @@ from estimators.speed_estimator import SpeedEstimator
 from estimators.height_estimator import HeightEstimator
 from estimators.distance_estimator import DistanceEstimator
 from estimators.direction_detector import DirectionDetector
-from estimators.ppe_detector import PPEDetector
 from utils.video_handler import VideoHandler
 from utils.visualization import Visualizer
 from utils.logger import DataLogger
@@ -102,7 +101,7 @@ class ObjectDetectionApp:
         if self.config['tracking']['enabled']:
             track_config = self.config['tracking']
             
-            # Ensure tracker does not drop detections the detector allowed (crucial for small PPEs with low conf)
+            # Ensure tracker does not drop detections the detector allowed
             effective_track_thresh = min(track_config['track_thresh'], det_config['confidence_threshold'])
             
             self.tracker = ObjectTracker(
@@ -158,21 +157,6 @@ class ObjectDetectionApp:
         else:
             self.direction_detector = None
             
-        # PPE Detector
-        if self.config.get('ppe_detection', {}).get('enabled', False):
-            ppe_config = self.config['ppe_detection']
-            perf_config = self.config.get('performance', {})
-            self.ppe_detector = PPEDetector(
-                model_path=ppe_config.get('model', 'yolov8n.pt'),
-                conf_threshold=ppe_config.get('confidence_threshold', 0.5),
-                iou_threshold=ppe_config.get('iou_threshold', 0.45),
-                device=self.config['detection']['device'],
-                required_items=ppe_config.get('required_items', []),
-                half=perf_config.get('use_half_precision', False)
-            )
-        else:
-            self.ppe_detector = None
-        
         # Alert System
         alerts_config = self.config.get('alerts', {})
         self.alert_system = AlertSystem(alerts_config)
@@ -234,10 +218,6 @@ class ObjectDetectionApp:
         if self.direction_detector is not None:
             detections = self.direction_detector.detect_direction(detections)
             
-        # Detect PPE
-        if getattr(self, 'ppe_detector', None) is not None:
-            detections = self.ppe_detector.check_ppe(frame, detections)
-        
         # Check alerts
         if self.alert_system is not None:
             detections = self.alert_system.check_alerts(detections)

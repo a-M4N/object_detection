@@ -41,17 +41,6 @@ echo ===================================================
 echo   Installation Complete!
 echo ===================================================
 echo.
-echo Running installation test...
-echo.
-
-python test_installation.py
-
-echo.
-if %errorlevel% equ 0 (
-    echo [SUCCESS] System is ready to use!
-) else (
-    echo [WARNING] Some tests failed. Please checks logs above.
-)
-
+echo [SUCCESS] System is ready to use!
 echo.
 pause

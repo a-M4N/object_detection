@@ -211,30 +211,102 @@ class DetectionGUI(ctk.CTk):
         try:
             print(f"--- Starting Detection [Mode: {mode}, Profile: {profile}] ---")
             
-            if profile == "Playing Cards":
-                config_path = "config/cards.yaml"
-            elif profile == "PPE Detection":
-                config_path = "config/ppe.yaml"
-            else:
-                config_path = "config/config.yaml"
-                
-            # Create App Instance
-            app = ObjectDetectionApp(config_path=config_path)
-            
             # Check if source is int (webcam)
             if mode == 'webcam':
                 try:
                     source = int(source)
                 except ValueError:
-                    pass
-
-            app.run(
-                source=source,
-                mode=mode,
-                save_output=self.save_output_chk.get(),
-                export_data=self.export_data_chk.get(),
-                show_display=self.show_display_chk.get()
-            )
+                    source = 0
+            
+            if profile == "PPE Detection":
+                # Direct OpenCV loop for PPE integration
+                import cv2
+                from ppe_integration import detect_all_ppe
+                
+                print("Starting PPE Detection...")
+                
+                # Check options
+                save_output = self.save_output_chk.get()
+                show_display = self.show_display_chk.get()
+                import time
+                
+                if mode == "image":
+                    frame = cv2.imread(source)
+                    if frame is None:
+                        print(f"Error: Could not read image {source}")
+                        return
+                    
+                    processed_frame = detect_all_ppe(frame)
+                    
+                    if save_output:
+                        os.makedirs("output/images", exist_ok=True)
+                        out_path = f"output/images/ppe_output_{int(time.time())}.jpg"
+                        cv2.imwrite(out_path, processed_frame)
+                        print(f"Saved image to {out_path}")
+                        
+                    if show_display:
+                        cv2.imshow("PPE Safety Gear Detection", processed_frame)
+                        print("Press any key in the image window to close.")
+                        cv2.waitKey(0)
+                        cv2.destroyAllWindows()
+                        
+                else:
+                    cap = cv2.VideoCapture(source)
+                    if not cap.isOpened():
+                        print(f"Error: Could not open source {source}.")
+                        return
+                    
+                    out = None
+                    if save_output:
+                        fps = cap.get(cv2.CAP_PROP_FPS) or 30.0
+                        width = int(cap.get(cv2.CAP_PROP_FRAME_WIDTH))
+                        height = int(cap.get(cv2.CAP_PROP_FRAME_HEIGHT))
+                        os.makedirs("output/videos", exist_ok=True)
+                        out_path = f"output/videos/ppe_output_{int(time.time())}.mp4"
+                        fourcc = cv2.VideoWriter_fourcc(*'mp4v')
+                        out = cv2.VideoWriter(out_path, fourcc, fps, (width, height))
+                        print(f"Saving output to {out_path}")
+                    
+                    while cap.isOpened():
+                        ret, frame = cap.read()
+                        if not ret:
+                            break
+                            
+                        processed_frame = detect_all_ppe(frame)
+                        
+                        if save_output and out:
+                            out.write(processed_frame)
+                        
+                        if show_display:
+                            cv2.imshow("PPE Safety Gear Detection", processed_frame)
+                            if cv2.waitKey(1) & 0xFF == ord('q'):
+                                print("User requested quit")
+                                break
+                    
+                    cap.release()
+                    if out:
+                        out.release()
+                    if show_display:
+                        cv2.destroyAllWindows()
+                
+            else:
+                # Regular ObjectDetectionApp loop
+                if profile == "Playing Cards":
+                    config_path = "config/cards.yaml"
+                else:
+                    config_path = "config/config.yaml"
+                    
+                # Create App Instance
+                app = ObjectDetectionApp(config_path=config_path)
+                
+                app.run(
+                    source=source,
+                    mode=mode,
+                    save_output=self.save_output_chk.get(),
+                    export_data=self.export_data_chk.get(),
+                    show_display=self.show_display_chk.get()
+                )
+            
             print("--- Processing Complete ---")
             
         except Exception as e:

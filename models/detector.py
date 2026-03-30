@@ -89,7 +89,9 @@ class ObjectDetector:
                 device=self.device,
                 imgsz=self.imgsz,
                 half=self.half,
-                augment=True,
+                augment=False,  # disabled TTA as it can merge/suppress overlapping multi-class detections
+                agnostic_nms=False,  # strictly enforce per-class NMS
+                max_det=300,
                 verbose=False
             )
             

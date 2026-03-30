@@ -50,20 +50,6 @@ direction_detection:
   min_displacement: 10  # Minimum pixel movement to detect direction
   history_frames: 10  # Frames to analyze for direction
 
-# PPE Detection
-ppe_detection:
-  enabled: false
-  model: "yolov8n.pt"  # Model for PPE detection (replace with custom weights)
-  confidence_threshold: 0.5
-  iou_threshold: 0.45
-  required_items:
-    - "Safety Helmet"
-    - "Safety Vest"
-    - "Safety Gloves"
-    - "Safety Goggles"
-    - "Safety Mask"
-    - "Safety Boots"
-
 # Visualization
 visualization:
   show_bbox: true

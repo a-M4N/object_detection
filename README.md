@@ -88,8 +88,7 @@ object_detection/
 ├── config/
 │   ├── __init__.py
 │   ├── config.yaml           # Main configuration file
-│   ├── cards.yaml            # Playing cards profile configuration
-│   └── camera_calibration.yaml
+│   └── cards.yaml            # Playing cards profile configuration
 ├── models/
 │   ├── __init__.py
 │   ├── detector.py           # YOLO detection wrapper
@@ -105,7 +104,6 @@ object_detection/
 │   ├── __init__.py
 │   ├── video_handler.py      # Video I/O operations
 │   ├── visualization.py      # Drawing and display
-│   ├── calibration.py        # Camera calibration
 │   └── logger.py             # Data logging
 ├── gui.py                    # Modern GUI application
 ├── main.py                   # Main application logic & CLI
@@ -154,11 +152,11 @@ Edit `config/config.yaml` to customize:
 - Speed/height estimation settings
 - Alert conditions
 
-### Camera Calibration
-For accurate measurements, calibrate your camera:
-1. Edit `config/camera_calibration.yaml`
-2. Set focal length, sensor size, and reference distances
-3. Optionally perform full calibration using checkerboard pattern
+### Display Options
+Configure visual display settings in `config/config.yaml`:
+- Bounding box colors
+- Font sizes and thickness
+- Visibility toggles for different metrics
 
 ## Usage
 
