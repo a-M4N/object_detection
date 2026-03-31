@@ -49,7 +49,7 @@ output/
 logs/
 
 # YOLO Models (optional - comment out if you want to track models)
-*.pt
+# *.pt
 *.onnx
 *.engine
 
